@@ -1,0 +1,12 @@
+===================ASL PIPELINE PARAMETERS===================  
+Labeling scheme                        :  pCASL
+Control/label order                    :  Label first
+Acquisition scheme                     :  2D
+Labeling duration [ms]                 :  1800
+Post-labeling delay [ms]               :  1800
+Slice acquisition duration [ms]        :  35
+Background suppression [Yes/No]        :  N
+Tissue T1 [ms]                         :  1165
+Blood T1 [ms]                          :  1650
+Brain/blood partition coeff. [ml/g]    :  0.9
+Labeling efficiency                    :  0.85

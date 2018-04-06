@@ -1,0 +1,20 @@
+{
+	"lablschm": "pCASL",
+	"order": "Label first",
+	"acqdim": "2D",
+	"labldur": 1800,
+	"PLD": 1800,
+	"TI1": null,
+	"TI": null,
+	"w": 35,
+	"bgsup": 0,
+	"time_BS": null,
+	"num_BS": null,
+	"alpha_BS": null,
+	"M0_TR": null,
+	"T1tissue": 1165,
+	"T1blood": 1650,
+	"lambda": 0.9,
+	"alpha_labl": 0.85,
+	"UCLA_Siemens_pCASL": 0
+}
