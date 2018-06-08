@@ -61,24 +61,31 @@ if flag_multidelay == 0
             img_rep = reshape(img_tmp,[],dim0(4));
             img_rep = mean(img_rep,1);
             [sig_max,idx_max] = max(img_rep);
-            img_rep(idx_max) = [];
-            std_rep = std(img_rep);
-            ave_rep = mean(img_rep);
+            img_tmp = img_rep;
+            img_tmp(idx_max) = [];
+            std_rep = std(img_tmp);
+            ave_rep = mean(img_tmp);
             %         idx = kmeans(img_rep',2);
             %         if sum(idx==1)==1 || sum(idx==2)==1
-            if idx_max == 1 && sig_max > ave_rep + 5*std_rep
-                % UCLA siemens protocol
+            if sig_max > ave_rep + 10*std_rep
+                [sig_sorted,~] = sort(img_rep);
+                thre_sig = (sig_sorted(1) + sig_sorted(end)) / 2.0;
+                idx_m0   = find(img_rep > thre_sig);
+                idx_asl  = find(img_rep < thre_sig); if mod(length(idx_asl),2) == 1, idx_asl = idx_asl(2:end); end;
                 
-                outVol          = V(1);
-                outVol.mat      = V(1).mat;
-                outVol.fname    = [path_data filesep name_asl '_m0.img'];
-                spm_write_vol(outVol,img_all(:,:,:,1));
+                % UCLA siemens protocol                
+                for ii = 1:length(idx_m0)
+                    outVol          = V(idx_m0(ii));
+                    outVol.n        = [ii,1];
+                    outVol.fname    = [path_data filesep name_asl '_m0.img'];
+                    spm_write_vol(outVol,img_all(:,:,:,idx_m0(ii)));
+                end
                 
-                for ii = 3:nvol
-                    outVol          = V(ii);
-                    outVol.n        = [ii-2,1];
+                for ii = 1:length(idx_asl)
+                    outVol          = V(idx_asl(ii));
+                    outVol.n        = [ii,1];
                     outVol.fname    = [path_data filesep name_asl '_asl.img'];
-                    spm_write_vol(outVol,img_all(:,:,:,ii));
+                    spm_write_vol(outVol,img_all(:,:,:,idx_asl(ii)));
                 end
                 
                 % overwrite some asl_paras
@@ -88,11 +95,8 @@ if flag_multidelay == 0
             else
                 % all ASL images, no M0
                 % do nothing
-                
             end
-            
         end
-        
     else
         % ASL scan & M0 scan are uploaded seperately
         % do nothing

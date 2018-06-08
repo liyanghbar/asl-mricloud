@@ -115,12 +115,19 @@ if flag_t1 % if MPRAGE zipfolder is uploaded
     unzip([path_data filesep name_t1 '.zip'],[path_data filesep name_t1]);
 
     % Get mprage name
-    alllist = dir([path_data,filesep,name_t1]); % find the folder name inside the unzipped directory
-    fdrlist = {alllist.name};
-    mydir   = vertcat(alllist.isdir);
-    fdrlist = fdrlist(mydir);
-    fdrlist = fdrlist{end};
-    path_mpr    = [path_data,filesep,name_t1,filesep,fdrlist];
+%     dirinfo     = dir([path_data,filesep,name_t1,filesep,'**',filesep,'multilevel_lookup_table.txt']);
+%     path_mpr    = dirinfo(1).folder;
+    dirfound = 0;
+    path_mpr = [path_data,filesep,name_t1];
+    while ~dirfound
+        if isempty(spm_select('List',path_mpr,'^mni.imgsize$'))
+            tmplst = dir(path_mpr);
+            fdrlst = tmplst([tmplst.isdir]);
+            path_mpr = [path_mpr,filesep,fdrlst(3).name];
+        else
+            dirfound = 1;
+        end
+    end
     name_tmp    = spm_select('List',path_mpr,'.*[^mni].imgsize$');
     name_mpr    = name_tmp(1:end-8);
         
@@ -128,7 +135,8 @@ if flag_t1 % if MPRAGE zipfolder is uploaded
     disp(['ASLMRICloud: (' name_asl ') Coregister CBF maps to MPRAGE...']);
     mpr_brain = ASL_mprageSkullstrip(path_mpr, name_mpr);
     target = mpr_brain;
-    if flag_m0 % use source with high snr (m0 > ctrl)
+    if flag_m0 && exist([path_temp filesep 'r' name_asl '_m0ave.img'],'file') % use source with high snr (m0 > ctrl)
+        % even flag_m0 = 1, dim may differ
         source = [path_temp filesep 'r' name_asl '_m0ave.img'];
     else
         source = [path_temp filesep 'mean' name_asl '.img'];

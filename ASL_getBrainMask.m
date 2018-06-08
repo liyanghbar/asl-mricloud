@@ -27,7 +27,7 @@ if ~isempty(P1) && flag_addrealignmsk
     V1 = spm_read_vols(P1);
     brnmsk_realign = V1 > 0.5;
 else
-    brnmsk_realign = ones(matsize);
+    brnmsk_realign = (ones(matsize) > 0.5);
 end
 
 
@@ -87,8 +87,8 @@ switch flag_small_fov
         thre = 0.5;  % vox > thre * mean(center_part)
         mask1 = inbrain(imgvol,thre,2,1); % erode by 1 layer
         mask2 = inbrain(imgvol,thre,2,2); % dilate by 1 layer -> no dilate
-        brnmsk_clcu = logical(mask1 .* brnmsk_realign);
-        brnmsk_dspl = logical(mask2 .* brnmsk_realign);
+        brnmsk_clcu = logical(mask1 .* uint8(brnmsk_realign));
+        brnmsk_dspl = logical(mask2 .* uint8(brnmsk_realign));
 end
 end
 
